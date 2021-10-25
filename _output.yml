@@ -1,0 +1,10 @@
+bookdown::gitbook:
+  css: style.css
+  config:
+    toc:
+      before: |
+        <li><a href="https://www.uninorte.edu.co/web/maestria-en-estadistica-aplicada">Maestría en Estadística Aplicada</a></li>
+      after: |
+        <li><a href="https://www.uninorte.edu.co/" target="blank">Universidad del Norte</a></li>
+    edit: https://github.com/USERNAME/REPO/edit/BRANCH/%s
+    download: ["pdf", "epub"]
