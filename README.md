@@ -1,14 +1,4 @@
-Welcome! 
-
-This is a minimal example of a book based on R Markdown and **bookdown** (https://github.com/rstudio/bookdown). 
-
-This template provides a skeleton file structure that you can edit to create your book. 
-
-The contents inside the .Rmd files provide some pointers to help you get started, but feel free to also delete the content in each file and start fresh.
-
-Additional resources:
-
-The **bookdown** book: https://bookdown.org/yihui/bookdown/
-
-The **bookdown** package reference site: https://pkgs.rstudio.com/bookdown
-# ShinyDash
+![uninorte](https://upload.wikimedia.org/wikipedia/commons/f/ff/Logo_uninorte_colombia.jpg)
+## Visualización de Datos con R y Python
+## Programa de Maestría en Estadística Aplicada
+## Profesor: Lihki Rubio
