@@ -16,3 +16,17 @@ visualización-de-datos-faltantes
 borrado-de-la-lista
 imputación-de-la-media
 otras-técnicas-de-imputación
+detección-de-valores-atípicos
+estadísticas-descriptivas
+histogramas
+boxplot
+percentiles
+filtro-de-hampel
+prueba-de-grubbs
+prueba-de-dixon
+prueba-de-rosner
+tratamiento-de-los-valores-atípicos
+introducción-a-postgresql-en-r
+conexión-con-r
+importación-de-tablas
+candlesticks-plot
