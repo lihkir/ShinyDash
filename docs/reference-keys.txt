@@ -30,3 +30,17 @@ introducción-a-postgresql-en-r
 conexión-con-r
 importación-de-tablas
 candlesticks-plot
+visualización-con-plotly-y-shiny
+introducción-a-plotly
+introducción-a-ggplotly
+barras-e-histogramas
+boxplots
+mapas
+mapas-integrados
+mapas-coropléticos
+shiny
+su-primera-aplicación-shiny
+ocultación-y-rediseño-al-cambiar-de-tamaño
+eventos-de-alcance
+drill-down
+despliegue-de-aplicación-shiny
