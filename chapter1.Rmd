@@ -2,15 +2,15 @@
 
 ## Introducción
 
-- Los datos faltantes es uno de los temas que se ignoran en la mayoría de los textos introductorios. Probablemente, parte de la razón por la que esto es así es que todavía abundan muchos mitos sobre el análisis con datos ausentes. Además, algunas de las investigación sobre técnicas de vanguardia es aún relativamente nueva. Una razón más legítima para su ausencia en los textos introductorios es que la mayoría de las metodologías más de principios son bastante complicadas, desde el punto de vista matemático. Sin embargo, la increíble ubicuidad de los problemas relacionados con los datos faltantes en el análisis de datos de la vida real requiere que se aborde el tema. Esta sección sirve como una suave introducción al tema y a una de las técnicas más eficaces para tratarla. Un refrán común sobre el tema es algo así como que la mejor manera de tratar con los datos que faltan es no tenerlos. Es cierto que los datos que faltan son un tema complicado, y hay muchas maneras de hacerlo mal. Es importante no llevar este consejo al extremo, sin embargo, para eludir los problemas de los datos perdidos, algunos han impedido participantes en una encuesta, que por ejemplo, siguen sin responder a todas las preguntas de un formulario. 
+- Los datos faltantes es uno de los temas que se ignoran en la mayoría de los textos introductorios. Probablemente, parte de la razón por la que esto es así es que todavía abundan muchos mitos sobre el análisis con datos ausentes. Además, algunas de las investigaciones sobre técnicas de vanguardia es aún relativamente nueva. Una razón más legítima para su ausencia en los textos introductorios es que la mayoría de las metodologías más de principios son bastante complicadas, desde el punto de vista matemático. Sin embargo, la increíble ubicuidad de los problemas relacionados con los datos faltantes en el análisis de datos de la vida real requiere que se aborde el tema. Esta sección sirve como una suave introducción al tema y a una de las técnicas más eficaces para tratarla. Un refrán común sobre el tema es algo así como que la mejor manera de tratar con los datos que faltan es no tenerlos. Es cierto que los datos que faltan son un tema complicado, y hay muchas maneras de hacerlo mal. Es importante no llevar este consejo al extremo, sin embargo, para eludir los problemas de los datos perdidos, algunos han impedido participantes en una encuesta, que por ejemplo, siguen sin responder a todas las preguntas de un formulario. 
 
 - Hay tratamientos para los datos que faltan, pero no hay tratamientos para los datos malos. El tratamiento estándar para el problema de los datos que faltan es reemplazar los datos que faltan por valores no ausentes. Este proceso se denomina imputación. En la mayoría de los casos, el objetivo de la imputación no es recrear el conjunto de datos completo perdido, sino permitir que se realicen estimaciones o inferencias estadísticas válidas a partir de los datos perdidos. Por ello, la eficacia de las diferentes técnicas de imputación no puede evaluarse por su capacidad de recrear los datos con la mayor exactitud posible a partir de un conjunto de datos perdidos simulado, sino que deben juzgarse por su capacidad de apoyar las mismas inferencias estadísticas que se obtendrían del análisis de los datos completos que se extraen del análisis. 
 
-- De este modo, rellenar los datos que faltan es sólo un paso hacia el verdadero objetivo: el análisis. El conjunto de datos imputados rara vez se considera el objetivo final de la imputación. En la práctica, hay muchas formas diferentes de tratar los datos que faltan, algunas son buenas y otras no tanto. Algunas están bien en determinadas circunstancias, pero no en otras. Algunas implican la eliminación de datos perdidos, mientras que otras implican la imputación. Vamos a mencionar brevemente algunos de los métodos más comunes. Sin embargo, el objetivo final de, es iniciarle en lo que a menudo se describe como el estándar de oro de las técnicas de imputación: la imputación múltiple.
+- De este modo, rellenar los datos que faltan es sólo un paso hacia el verdadero objetivo: el análisis. El conjunto de datos imputados rara vez se considera el objetivo final de la imputación. En la práctica, hay muchas formas diferentes de tratar los datos que faltan, algunas son buenas y otras no tanto. Algunas están bien en determinadas circunstancias, pero no en otras. Algunas implican la eliminación de datos perdidos, mientras que otras implican la imputación. Vamos a mencionar brevemente algunos de los métodos más comunes. Sin embargo, el objetivo final de esta sección, es iniciarle en lo que a menudo se describe como el estándar de oro de las técnicas de imputación: la imputación múltiple.
 
 ## Visualización de los datos que faltan
 
-- Para demostrar la visualización de patrones de datos ausentes, primero tenemos que crear algunos datos ausentes. Este será también el mismo conjunto de datos sobre el que realizaremos el análisis más adelante en el capítulo. Para mostrar cómo utilizar la imputación múltiple en un escenario semirealista, vamos a crear una versión del conjunto de datos `mtcars` con algunos valores perdidos: Configuremos `seed`  (para la aleatoriedad determinista), y creemos una variable para mantener nuestro nuevo conjunto de datos. Los datos se extrajeron de la revista **Motor Trend US** de 1974 y comprenden el consumo de combustible y 10 aspectos del diseño y el rendimiento de 32 automóviles (modelos de 1973 a 1974).
+- Para demostrar la visualización de patrones de datos ausentes, primero tenemos que crear algunos datos ausentes. Para mostrar cómo utilizar la imputación múltiple en un escenario semirealista, vamos a crear una versión del conjunto de datos `mtcars` con algunos valores perdidos: Configuremos `seed`  (para la aleatoriedad determinista), y creemos una variable para mantener nuestro nuevo conjunto de datos. Los datos se extrajeron de la revista **Motor Trend US** de 1974 y comprenden el consumo de combustible y 10 aspectos del diseño y el rendimiento de 32 automóviles (modelos de 1973 a 1974).
 
 ```{r}
 set.seed(2)
@@ -50,8 +50,7 @@ Ahora, echemos un vistazo al conjunto de datos:
 head(miss_mtcars)
 ```
 
-- Ahora vamos a visualizar los datos faltantes. La primera forma en que vamos a visualizar el patrón de los datos faltantes es utilizando la función función `md.pattern` del paquete `mice` (que es también el paquete que vamos a utilizar para imputar nuestros datos faltantes). Si no tiene el paquete
-instálelo antes
+- Ahora vamos a visualizar los datos faltantes. La primera forma en que vamos a visualizar el patrón de los datos faltantes es utilizando la función función `md.pattern` del paquete `mice` (que es también el paquete que vamos a utilizar para imputar nuestros datos faltantes). Si no tiene el paquete instálelo antes
 
 ```{r}
 library(mice)
@@ -74,7 +73,7 @@ aggr(miss_mtcars, numbers=TRUE)
 marginplot(miss_mtcars[c(1,2)])
 ```
 
-- A simple vista, esta representación nos muestra, sin esfuerzo, que la columna `drat` representa la mayor proporción de faltas, por columnas, seguida de `mpg, cyl, qsec, vs.` y `wt`. El gráfico de la derecha nos muestra información similar a la de la salida de `md.pattern`. Esta representación, sin embargo, hace que sea más fácil saber si hay algún patrón sistemático de omisión. Las celdas azules representan los datos no ausentes, y las rojas representan los datos que faltan. Los números de la derecha del gráfico representan la proporción de filas que muestran ese patrón de datos perdidos. El 37,5% de las filas no contienen ningún tipo de dato que falte.
+- A simple vista, esta representación nos muestra, sin esfuerzo, que la columna `drat` representa la mayor proporción de datos faltantes, por columnas, seguida de `mpg, cyl, qsec, vs` y `wt`. El gráfico de la derecha nos muestra información similar a la de la salida de `md.pattern`. Esta representación, sin embargo, hace que sea más fácil saber si hay algún patrón sistemático de omisión. Las celdas azules representan los datos no ausentes, y las rojas representan los datos que faltan. Los números de la derecha del gráfico representan la proporción de filas que muestran ese patrón de datos perdidos. El 37,5% de las filas no contienen ningún tipo de dato que falte.
 
 - El diagrama de caja rojo de la izquierda muestra la distribución de `cyl` sin `mpg`, mientras que el diagrama de caja azul muestra la distribución de los restantes puntos de datos. Lo mismo ocurre con los gráficos de caja de `mpg` en la parte inferior del gráfico. Si los datos tienen mecanismo `MCAR` se espera que los gráficos de caja rojos y azules sean muy similares.
 
@@ -86,7 +85,7 @@ El paquete `VIM` nos permitió visualizar los patrones de datos que faltaban. Un
 
   - El primer mecanismo, `MCAR`, se produce cuando la falta de datos no está relacionada con la datos. Esto ocurriría, por ejemplo, si se borraran filas de una base de datos al azar, o si una ráfaga de viento se llevara una muestra aleatoria de los formularios de encuesta de un investigador. El mecanismo que rige la ausencia de `drat, mpg, cyl, wt`, y `vs`' es `MCAR`, porque seleccionamos al azar los elementos que faltan. Este mecanismo, aunque es el más fácil de trabajar, rara vez es sostenible en la práctica.
 
-- **Faltantes no aleatorios (MNAR)**
+- **Faltantes no aleatorios `(MNAR)`**
 
   - El mecanismo `MNAR` se produce cuando la ausencia de una variable está relacionada con la variable en sí misma. Por ejemplo, supongamos que la báscula que pesa cada coche tiene una capacidad de sólo 3.700 libras y, por ello, los ocho coches que pesaban más se registraron como `NA`. Este es un ejemplo clásico del mecanismo `MNAR`, es el propio peso de la observación la causa de que falte. Otro ejemplo sería si durante el transcurso del ensayo de un fármaco antidepresivo los participantes a los que no les ayudaba el fármaco se deprimían demasiado para continuar con el ensayo. Al final del ensayo, cuando se accede y se registra el nivel de depresión de todos los participantes, habrá valores que falten para los participantes cuyo motivo de ausencia está relacionado con su nivel de depresión.
 
@@ -97,8 +96,8 @@ El paquete `VIM` nos permitió visualizar los patrones de datos que faltaban. Un
   
   - La mejor manera de explicarlo es con el siguiente ejemplo: Supongamos que en una encuesta hay una pregunta sobre el nivel de ingresos. Debido a ello, un gran número de participantes en la encuesta cuya lengua materna no es el inglés no pudo interpretar la pregunta y la dejaron en blanco. Si la encuesta sólo recogía el nombre, el sexo y los ingresos, el mecanismo de datos faltantes de la pregunta sobre los ingresos sería `MNAR`. Sin embargo, si el cuestionario incluía una pregunta sobre si el participante hablaba inglés como como primera lengua, el mecanismo sería `MAR`. La inclusión de la variable *Is English* significa que la falta de respuesta a la pregunta sobre los ingresos puede puede explicarse por completo. La razón por la que el nombre falta al azar es que cuando se controla la relación entre la variable omitida y la(s) variable(s) observada(s) con la que está relacionada (por ejemplo, ¿Cuál es su renta? y ¿Es el inglés su primera lengua? respectivamente), los datos faltan al azar.
 
-  - Como otro ejemplo, existe una relación sistemática entre las variables `am` y `qsec` en nuestro conjunto de datos simulados que faltan: los `qsecs` sólo faltan en los coches automáticos. Pero dentro del grupo de coches automáticos, la variable `qsec` falta al azar. Por lo tanto, el mecanismo de `qsec` es `MAR`; controlando el tipo de transmisión, `qsec` falta al azar. Tenga en cuenta, sin embargo, que si eliminamos `am` de nuestro conjunto de datos simulado, `qsec` se convertiría en MNAR.
-  
+  - Como otro ejemplo, existe una relación sistemática entre las variables `am` y `qsec` en nuestro conjunto de datos simulados que faltan: los `qsecs` sólo faltan en los coches automáticos. Pero dentro del grupo de coches automáticos, la variable `qsec` falta al azar. Por lo tanto, el mecanismo de `qsec` es `MAR`; controlando el tipo de transmisión, `qsec` falta al azar. Tenga en cuenta, sin embargo, que si eliminamos `am` de nuestro conjunto de datos simulado, `qsec` se convertiría en `MNAR`.
+
 
 - **Observación**
   
@@ -113,13 +112,23 @@ El paquete `VIM` nos permitió visualizar los patrones de datos que faltaban. Un
 
 ```{r}
 data <- airquality
+head(data)
+```
+
+```{r}
+# data <- airquality
 data[4:10, 3] <- rep(NA, 7)
 data[1:5, 4] <- NA
 ```
 
+
 ```{r}
 data <- data[-c(5,6)]
 summary(data)
+```
+
+```{r}
+head(data)
 ```
 
 - Al parecer, el `Ozone` es la variable con más puntos de datos perdidos. A continuación vamos a profundizar en los patrones de datos que faltan. Suponiendo que los datos sean `MCAR`, demasiados datos perdidos también pueden ser un problema. Por lo general, un umbral máximo seguro es el 5% del total para conjuntos de datos grandes. Si los datos que faltan para una determinada característica o muestra son superiores al 5%, probablemente deba dejar de lado esa característica o muestra. Por lo tanto, comprobamos las características (columnas) y las muestras (filas) en las que falta más del 5% de los datos mediante una sencilla función
@@ -128,17 +137,16 @@ summary(data)
 ```{r}
 pMiss <- function(x){sum(is.na(x))/length(x)*100}
 apply(data,2,pMiss)
-apply(data,1,pMiss)
 ```
 
-- Vemos que al ozono le falta casi el 25% de los puntos de datos, por lo que podríamos considerar la posibilidad de eliminarlo del análisis o de reunir más mediciones. Las demás variables están por debajo del umbral del 5%, por lo que podemos mantenerlas. En lo que respecta a las muestras, la falta de una sola característica supone un 25% de datos perdidos por muestra. Las muestras a las que les faltan 2 o más características (> 50%) deben ser eliminadas si es posible.
+- Vemos que al ozono le falta casi el 25% de los puntos de datos, por lo que podríamos considerar la posibilidad de eliminarlo del análisis o de reunir más mediciones. Las demás variables están por debajo del umbral del 5%, por lo que podemos mantenerlas.
 
 - Usemos `md.pattern()` para conocer mejor el patrón de los datos que faltan
 
 
 ```{r}
 library(mice)
-md.pattern(data)
+md.pattern(data, rotate.names = TRUE)
 ```
 
 - La salida nos dice que 104 muestras están completas, que a 34 muestras les falta sólo la medición de `Ozone`, que a 4 muestras les falta sólo el valor de `Solar.R` y así sucesivamente. Una representación visual quizás más útil puede obtenerse utilizando el paquete `VIM` de la siguiente manera
@@ -205,7 +213,7 @@ grid.arrange(ggp1, ggp2, ncol = 2)
 
 ### Imputación de la media
 
-- Algunos científicos de datos o estadísticos pueden buscar una solución rápida sustituyendo los datos que faltan por la media. La media se utiliza a menudo para imputar datos categóricos. Por ejemplo, en el conjunto de datos de calidad del aire, supongamos que queremos imputar la media de sus valores perdidos. En este caso, utilizamos el paquete `R` `mice`. Cambiando el argumento `method = mean`, se especifica la imputación de la media, el argumento `m = 1` cambia las iteraciones a 1, lo que significa no (iteración).
+- Algunos científicos de datos o estadísticos pueden buscar una solución rápida sustituyendo los datos que faltan por la media. La media se utiliza a menudo para imputar datos no categóricos. Por ejemplo, en el conjunto de datos de calidad del aire, supongamos que queremos imputar la media de sus valores perdidos. En este caso, utilizamos el paquete `R` `mice`. Cambiando el argumento `method = mean`, se especifica la imputación de la media, el argumento `m = 1` cambia las iteraciones a 1, lo que significa no (iteración).
 
 - El fundamento teórico de utilizar la media para imputar los datos perdidos es que la media es una buena estimación para seleccionar aleatoriamente una observación de una distribución normal. Ahora, intentaremos imputar la media para las variables `Ozono` y `Solar.R` del conjunto de datos `airquality`. En primer lugar, vamos a cargar los paquetes `mice` y `mipackages` (instale el paquete de `CRAN` primero usando `install.packages("mice")` y `install.packages("mi")`). Para mas información sobre el paquete utlizado visitar https://cran.r-project.org/web/packages/mice/mice.pdf. Podemos recuperar el conjunto de datos completo utilizando la función `complete()`.
 
@@ -220,7 +228,7 @@ library(foreign)
 imp <- mice(data, m=5, maxit=50, method ='pmm', seed=500, printFlag = FALSE)
 ```
 
-- Donde `m=5` se refiere al número de conjuntos de datos imputados. Cinco es el valor por defecto. `meth='pmm'` se refiere al método de imputación. En este caso, utilizamos el método de imputación de coincidencia de medias predictivas. Se pueden utilizar otros métodos de imputación, escriba `methods(mice)` para obtener una lista de los métodos de imputación disponibles.
+- Donde `m=5` se refiere al número de imputaciones múltiples. El valor por defecto es `m=5`. `meth='pmm'` se refiere al método de imputación. En este caso, utilizamos el método de imputación de coincidencia de medias predictivas. Se pueden utilizar otros métodos de imputación, escriba `methods(mice)` para obtener una lista de los métodos de imputación disponibles.
 
 ```{r}
 imp_df <- complete(imp)
@@ -302,8 +310,14 @@ imp.regress$imp$Wind
 
 ```{r}
 dat <- ggplot2::mpg
+head(dat)
+```
+
+
+```{r}
 summary(dat$hwy)
 ```
+
 
 - Nótese que el mínimo y el máximo son, respectivamente, el primer y el último valor de la salida anterior. Como alternativa, también pueden calcularse con las funciones `min()` y `max()`
 
@@ -319,7 +333,7 @@ max(dat$hwy)
 
 ### Histogramas 
 
-- Otra forma básica de detectar valores atípicos es dibujar un histograma de los datos. Utilizando la base de `R` (con el número de `bins` correspondiente a la raíz cuadrada del número de observaciones para tener más `bins` que la opción por defecto), o usando `ggplot2`
+- Otra forma básica de detectar valores atípicos es dibujar un histograma de los datos. Utilizando la base de `R` (con el número de `bins` correspondiente a la raíz cuadrada del número de observaciones para tener más `bins` que la opción por defecto), o usando `ggplot2`. Considere la columna `hwy: highway mileage` (*miles per gallon*)
 
 ```{r}
 hist(dat$hwy,
@@ -342,7 +356,7 @@ ggplot(dat) +
 
 ### Boxplot
 
-- Además de los histogramas, los `boxplots` también son útiles para detectar posibles valores atípicos
+- Además de los histogramas, los `boxplots` también son útiles para detectar posibles valores atípicos. Considere nuevamente a manera de ejemplo la columna `hwy`
 
 ```{r}
 boxplot(dat$hwy,
@@ -413,7 +427,7 @@ upper_bound <- quantile(dat$hwy, 0.975)
 upper_bound
 ```
 
-- Según este método, todas las observaciones por debajo de 14 y por encima de 35,175 se considerarán posibles valores atípicos. Los números de fila de las observaciones fuera del intervalo pueden extraerse entonces con la función `which()`
+- Según este método, todas las observaciones por debajo de 14 y por encima de 35.175 se considerarán posibles valores atípicos. Los números de fila de las observaciones fuera del intervalo pueden extraerse entonces con la función `which()`
 
 ```{r}
 outlier_ind <- which(dat$hwy < lower_bound | dat$hwy > upper_bound)
@@ -451,6 +465,7 @@ $$
 $$
 \textsf{MAD}=\textsf{median}(|X_{i}-\tilde{X}|)
 $$
+
 - Para este método, primero establecemos los límites del intervalo, gracias a las funciones `median()` y `mad()`
 
 ```{r}
@@ -471,6 +486,10 @@ outlier_ind <- which(dat$hwy < lower_bound | dat$hwy > upper_bound)
 outlier_ind
 ```
 
+```{r}
+dat[outlier_ind, ]
+```
+
 ### Prueba de Grubbs
 
 - La prueba de `Grubbs` permite detectar si el valor más alto o más bajo de un conjunto de datos es un valor atípico. La prueba de `Grubbs` detecta un valor atípico cada vez (valor más alto o más bajo), por lo que las hipótesis nula y alternativa son las siguientes
@@ -487,7 +506,7 @@ test <- grubbs.test(dat$hwy)
 test
 ```
 
-- El valor $p$ es de 0.056. Al nivel de significación del 5%, no rechazamos la hipótesis de que el valor más alto 44 no es un valor atípico. Por defecto, la prueba se realiza sobre el valor más alto (como se muestra en la salida de `R`: hipótesis alternativa: el valor más alto 44 es un valor atípico). Si desea realizar la prueba para el valor más bajo, simplemente añada el argumento `opposite = TRUE` en la función `grubbs.test()`
+- El valor $p$ es de 0.056. Al nivel de significación del 5%, no rechazamos la hipótesis de que el valor más alto 44 no es un valor atípico. No tenemos evidencia suficiente para decir que 44 es un valor atípico. Por defecto, la prueba se realiza sobre el valor más alto (como se muestra en la salida de `R`: hipótesis alternativa: el valor más alto 44 es un valor atípico). Si desea realizar la prueba para el valor más bajo, simplemente añada el argumento `opposite = TRUE` en la función `grubbs.test()`
 
 ```{r}
 test <- grubbs.test(dat$hwy, opposite = TRUE)
@@ -496,7 +515,7 @@ test
 
 - La salida de `R` indica que la prueba se realiza ahora sobre el valor más bajo (véase la hipótesis alternativa: el valor más bajo 12 es un valor atípico). El valor $p$ es 1. Al nivel de significación del 5%, no rechazamos la hipótesis de que el valor más bajo 12 no es un valor atípico.
 
-  - A modo de ilustración, sustituiremos ahora una observación por un valor más extremo y realizaremos la prueba de `Grubbs` en este nuevo conjunto de datos. Reemplacemos el $34^{\text{th}}$ por un valor de 212
+- A modo de ilustración, sustituiremos ahora una observación por un valor más extremo y realizaremos la prueba de `Grubbs` en este nuevo conjunto de datos. Reemplacemos el $34^{\text{th}}$ por un valor de 212
 
 ```{r}
 dat[34, "hwy"] <- 212
@@ -515,7 +534,7 @@ test
 
 - Al igual que la prueba de *Grubbs*, la prueba de *Dixon* se utiliza para comprobar si un único valor bajo o alto es un valor atípico. Por lo tanto, si se sospecha que hay más de un valor atípico, la prueba tiene que realizarse en estos valores atípicos sospechosos individualmente.
 
-- Tenga en cuenta que la prueba de `Dixon` es más útil para muestras de pequeño tamaño (normalmente $n\leq 25). Para realizar la prueba de `Dixon` en `R`, utilizamos la función `dixon.test()` del paquete `outliers`. Sin embargo, restringimos nuestro conjunto de datos a las `20` primeras observaciones, ya que la prueba de `Dixon` sólo se puede realizar en muestras de pequeño tamaño (`R` arrojará un error y sólo acepta conjuntos de datos de 3 a 30 observaciones)
+- Tenga en cuenta que la prueba de `Dixon` es más útil para muestras de pequeño tamaño (normalmente $n\leq 25$). Para realizar la prueba de `Dixon` en `R`, utilizamos la función `dixon.test()` del paquete `outliers`. Sin embargo, restringimos nuestro conjunto de datos a las `20` primeras observaciones, ya que la prueba de `Dixon` sólo se puede realizar en muestras de pequeño tamaño (`R` arrojará un error y sólo acepta conjuntos de datos de 3 a 30 observaciones)
 
 ```{r}
 subdat <- dat[1:20, ]
@@ -540,16 +559,20 @@ mtext(paste("Outliers: ", paste(out, collapse = ", ")))
 
 - A partir del `boxplot`, vemos que también podríamos aplicar la prueba de `Dixon` sobre el valor 20 además del valor 15 realizado anteriormente. Esto puede hacerse encontrando el número de fila del valor mínimo, excluyendo este número de fila del conjunto de datos y aplicando finalmente la prueba de `Dixon` a este nuevo conjunto de datos
 
+
 ```{r}
 remove_ind <- which.min(subdat$hwy)
 subsubdat <- subdat[-remove_ind, ]
 
+tail(subsubdat)
+```
+
+```{r}
 test <- dixon.test(subsubdat$hwy)
 test
 ```
 
 - Los resultados muestran que el segundo valor más bajo, 20, no es un valor atípico (valor $p$ = 0.13).
-
 
 ### Prueba de Rosner
 
@@ -560,7 +583,6 @@ test
 ```{r}
 library(EnvStats)
 test <- rosnerTest(dat$hwy, k = 3)
-test
 ```
 
 - Los resultados interesantes se ofrecen en la tabla `all.stats`
@@ -587,6 +609,9 @@ test$all.stats
 x <- dat$hwy
 qnt <- quantile(x, probs=c(.25, .75), na.rm = T)
 caps <- quantile(x, probs=c(.05, .95), na.rm = T)
+```
+
+```{r}
 H <- 1.5 * IQR(x, na.rm = T)
 x[x < (qnt[1] - H)] <- caps[1]
 x[x > (qnt[2] + H)] <- caps[2]
@@ -596,3 +621,4 @@ head(x)
 - **Predicción**
   
   En otro enfoque, los valores atípicos pueden sustituirse por valores perdidos `(NA)` y luego pueden predecirse considerándolos como una variable de respuesta. Ya hemos hablado de cómo predecir los valores perdidos en la sección anterior.
+  

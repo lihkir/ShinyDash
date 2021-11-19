@@ -2,7 +2,7 @@
 
 ## Introducción a `plotly`
 
--  Cualquier gráfico hecho con el paquete `R` de `plotly` es impulsado por la biblioteca `JavaScript` `plotly.js`. La función `plot_ly()` proporciona una interfaz 'directa' a `plotly.js` con algunas abstracciones adicionales para ayudar a reducir la escritura. Estas abstracciones, inspiradas en la Gramática de los gráficos y `ggplot2`, hacen que sea mucho más rápido iterar de un gráfico a otro, facilitando el descubrimiento de características interesantes en los datos `(Wilkinson 2005; Wickham 2009)`. Para demostrarlo, usaremos `plot_ly()` para explorar el conjunto de datos `diamonds` de `ggplot2` y aprenderemos un poco cómo funciona `plotly`
+-  Cualquier gráfico hecho con el paquete `R` de `plotly` es impulsado por la biblioteca `JavaScript` `plotly.js`. La función `plot_ly()` proporciona una interfaz 'directa' a `plotly.js` con algunas abstracciones adicionales para ayudar a reducir la escritura. Estas abstracciones, inspiradas en la gramática de los gráficos y `ggplot2`, hacen que sea mucho más rápido iterar de un gráfico a otro, facilitando el descubrimiento de características interesantes en los datos `(Wilkinson 2005; Wickham 2009)`. Para demostrarlo, usaremos `plot_ly()` para explorar el conjunto de datos `diamonds` de `ggplot2` y aprenderemos un poco cómo funciona `plotly`
 
 ```{r}
 library(plotly)
@@ -45,7 +45,7 @@ ggplotly(p)
 
 ## Barras e histogramas
 
-- Las funciones `add_bars()` y `add_histogram()` envuelven los tipos de trazado de barras e histogramas de `plotly.js`. La principal diferencia entre ellas es que las trazas de barras requieren alturas de barras (tanto `x` como `y`), mientras que las trazas de histograma requieren sólo una variable, y `plotly.js` maneja el binning en el navegador.15 Y quizás de forma confusa, ambas funciones pueden utilizarse para visualizar la distribución de una variable numérica o discreta. Así que, esencialmente, la única diferencia entre ellas es dónde se produce el binning.
+- Las funciones `add_bars()` y `add_histogram()` envuelven los tipos de trazado de barras e histogramas de `plotly.js`. La principal diferencia entre ellas es que las trazas de barras requieren alturas de barras (tanto `x` como `y`), mientras que las trazas de histograma requieren sólo una variable, y `plotly.js` maneja el binning en el navegador. Y quizás de forma confusa, ambas funciones pueden utilizarse para visualizar la distribución de una variable numérica o discreta. Así que, esencialmente, la única diferencia entre ellas es dónde se produce el binning.
 
 - La siguiente figura compara el algoritmo de agrupación por defecto en `plotly.js` con algunos algoritmos diferentes disponibles en `R` a través de la función `hist()`. Aunque `plotly.js` tiene la capacidad de personalizar los `bins` del histograma a través de `xbins/ybins`, `R` tiene diversas facilidades para estimar el número óptimo de `bins` en un histograma que podemos aprovechar fácilmente. La función `hist()` por sí sola nos permite referenciar 3 algoritmos famosos por su nombre (`Sturges 1926; Freedman, Diaconis 1981` y `Scott 1979`), pero también hay paquetes (por ejemplo, el paquete `histogram`) que amplían esta interfaz para incorporar más metodología (`Mildenberger, Rozenholc y Zasada. 2009`). La función `price_hist()` que aparece a continuación envuelve la función `hist()` para obtener los resultados del binning, y mapear esos bins a una versión graficada del histograma usando `add_bars()`
 
@@ -63,7 +63,8 @@ subplot(
   nrows = 4, shareX = TRUE
 )
 ```
-- La figura 5.2 muestra dos formas de crear un gráfico de barras básico. Aunque los resultados visuales son los mismos, vale la pena señalar la diferencia en la implementación. La función add_histogram() envía todos los valores observados al navegador y deja que plotly.js realice el binning. Se necesita más esfuerzo humano para realizar el binning en R, pero hacerlo tiene la ventaja de enviar menos datos, y requiere menos trabajo de cálculo del navegador web. En este caso, sólo tenemos unos 50.000 registros, por lo que no hay mucha diferencia en los tiempos de carga o el tamaño de la página. Sin embargo, con 1 millón de registros, el tiempo de carga de la página es más del doble y el tamaño de la página casi se duplica.
+
+- La siguiente figura muestra dos formas de crear un gráfico de barras básico. Aunque los resultados visuales son los mismos, vale la pena señalar la diferencia en la implementación. La función `add_histogram()` envía todos los valores observados al navegador y deja que `plotly.js` realice el binning. Se necesita más esfuerzo humano para realizar el binning en `R`, pero hacerlo tiene la ventaja de enviar menos datos, y requiere menos trabajo de cálculo del navegador web. En este caso, sólo tenemos unos 50.000 registros, por lo que no hay mucha diferencia en los tiempos de carga o el tamaño de la página. Sin embargo, con 1 millón de registros, el tiempo de carga de la página es más del doble y el tamaño de la página casi se duplica.
 
 ```{r}
 library(dplyr)

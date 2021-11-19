@@ -34,10 +34,10 @@ En esta sección estudiaremos la forma de implementar el modelo `ARIMA` estudiad
 - En esta sección cubriremos lo siguiente
 
   - El estado estacionario de los datos de las series temporales
-  - El proceso **random walk**
+  - El proceso random walk
   - Los procesos `AR` y `MA`
   - Los modelos `ARMA` y `ARIMA`
-  - El modelo ARIMA estacional
+  - El modelo `ARIMA` estacional
 
 - Librerías:
   
@@ -55,8 +55,11 @@ En esta sección estudiaremos la forma de implementar el modelo `ARIMA` estudiad
 - Uno de los principales supuestos de la familia de modelos `ARIMA` es que las series de entrada siguen la estructura de un proceso estacionario. Este supuesto se basa en el **Teorema de representación de Wold**, que afirma que cualquier proceso estacionario puede representarse como una combinación lineal de ruido blanco. 
 
 - Por lo tanto, antes de sumergirnos en los componentes del modelo `ARIMA`, vamos a detenernos a hablar del **proceso estacionario**. El **proceso estacionario**, en el contexto de los datos de las series temporales, describe un estado estocástico de la serie. Los datos de las series temporales son estacionarios si se dan las siguientes condiciones: 
-  - La media y la varianza de la serie no cambian con el tiempo 
-  - La estructura de correlación de la serie, junto con sus rezagos, permanece igual a lo largo del tiempo tiempo
+
+  - La media y la varianza de la serie no cambian con el tiempo: $E(X_{t})=E(X_{t+k})=\mu$ y $V(X_{t})=V(X_{t+k})=\sigma^2$
+  - La estructura de correlación de la serie, junto con sus rezagos, permanece igual a lo largo del tiempo tiempo: $\gamma_{k}=E[(X_{t}-\mu)(X_{t+k}-\mu)]$
+
+![](figures/arima1.png)
 
 - En los siguientes ejemplos, utilizaremos la función `arima.sim` del paquete `stats` para simular unos datos de series temporales estacionarios y no estacionarios y los representaremos con la función `ts_plot` del paquete `TSstudio`. La función `arima.sim` nos permite simular datos de series temporales basándonos en los componentes y características principales del modelo `ARIMA`:
   - Un `proceso autorregresivo (AR)`: Establece una relación entre la serie y sus $p$ rezagos pasados con el uso de un modelo de regresión
@@ -65,11 +68,13 @@ En esta sección estudiaremos la forma de implementar el modelo `ARIMA` estudiad
 
 - Consideraríamos una serie temporal de datos como no estacionaria siempre que las condiciones mencionadas anteriormente no se cumplan. Los ejemplos más comunes de una serie con una estructura no estacionaria son los siguientes:
 
-  - Una serie con una tendencia dominante: La media de la serie cambia a lo largo del tiempo como función del cambio en la tendencia de la serie, y por tanto la serie es no estacionaria
+- Una serie con una tendencia dominante: La media de la serie cambia a lo largo del tiempo como función del cambio en la tendencia de la serie, y por tanto la serie es no estacionaria
+
+![](figures/arima2.png)
+
   - Una serie con un componente estacional multiplicativo: En este caso, la varianza de la serie es una función de la oscilación estacional a lo largo del tiempo, que aumenta o disminuye con el tiempo
 
 - La serie clásica `AirPassenger` (el número mensual de pasajeros de las aerolíneas entre 1949 y 1960) del paquete de conjuntos de datos es un buen ejemplo de una serie que viola las dos condiciones del proceso estacionario. Dado que la serie tiene tanto una fuerte tendencia lineal como un estacional multiplicativo, tanto la media como la varianza cambian con el tiempo:
-
 
 ```{r}
 library(TSstudio)
@@ -83,7 +88,7 @@ ts_plot(AirPassengers,
 
 ## Transformación de una serie no estacionaria en una serie serie estacionaria
 
-- En la mayoría de los casos, a menos que tenga mucha suerte, sus datos brutos probablemente vendrán con una tendencia u otra forma de oscilación que viole los supuestos del proceso estacionario. Por lo tanto, para manejar esto, tendrá que aplicar algunos pasos de transformación con el fin de llevar la serie a un estado estacionario. Los métodos de transformación más comunes son la diferenciación la serie (o la des-tendencia) y la transformación logarítmica (o ambas). Repasemos las aplicaciones de estos métodos.
+- En la mayoría de los casos, a menos que tenga mucha suerte, sus datos brutos probablemente vendrán con una tendencia u otra forma de oscilación que viole los supuestos del proceso estacionario. Por lo tanto, para manejar esto, tendrá que aplicar algunos pasos de transformación con el fin de llevar la serie a un estado estacionario. Los métodos de transformación más comunes son la diferenciación la serie (*detrending*) y la transformación logarítmica (o ambas). Repasemos las aplicaciones de estos métodos.
 
 ## Diferenciación de series temporales
 
@@ -99,7 +104,8 @@ $$
 Y_{t}^{*}=Y_{t}^{'}-Y_{t-1}^{'}=(Y_{t}-Y_{t-1})-(Y_{t-1}-Y_{t-2})=
 Y_{t}-2Y_{t-1}+Y_{t-2}
 $$
-- Otra forma de diferenciación es la diferenciación estacional, que se basa en diferenciar la series con el desfase estacional:
+
+- Otra forma de diferenciación es la diferenciación estacional, que se basa en diferenciar la series con el rezago estacional:
 
 $$
 Y_{t}^{'}=Y_{t}-Y_{t-f}
@@ -163,11 +169,11 @@ $$
 $$
 donde
 
-  - `ARIMA`$(p,d,q)$ define un proceso `ARIMA` con un proceso `AR` de orden $p$, un grado $d$ de diferenciación, y un proceso `MA` de orden $q$
+  - `ARIMA(p,d,q)` define un proceso `ARIMA` con un proceso `AR` de orden $p$, un grado $d$ de diferenciación, y un proceso `MA` de orden $q$
   - $Y_{d}$ es la diferencia $d$ de la serie $Y_{t}$
   - $c$ representa una constante (o desviación)
   - $p$ define el número de rezagos que se regresan contra $Y_{t}$
-  - $Y_{d-i}$ es el coeficiente del rzago $i$ de la serie
+  - $Y_{d-i}$ es el coeficiente del rezago $i$ de la serie
   - $q$ define el número de términos de error pasados que se utilizarán en la ecuación
   - $\theta_{i}$ es el coeficiente correspondiente de $\epsilon_{t-i}$
   - $\epsilon_{t-q},\dots,\epsilon_{t}$ son términos de error de ruido blanco
@@ -183,7 +189,7 @@ Se pueden representar los modelos `AR, MA` o `ARMA` con el modelo `ARIMA`, por e
 
 ## Identificación del grado de diferenciación del modelo
 
-- Al igual que los parámetros $p$ y $q$, el ajuste del parámetro $d$ (el grado de diferenciación de la de la serie) puede hacerse con los gráficos `ACF` y `PACF`. En el siguiente ejemplo, utilizaremos los precios mensuales del café Robusta desde el año 2000. Esta serie forma parte del objeto `Coffee_Prices` del paquete `TSstudio`. Empezaremos cargando la serie `Coffee_Prices` y restando los precios mensuales del café Robusta desde enero de 2010 utilizando la función `window`:
+- Al igual que los parámetros $p$ y $q$, el ajuste del parámetro $d$ (el grado de diferenciación de la de la serie) puede hacerse con los gráficos `ACF` y `PACF`. En el siguiente ejemplo, utilizaremos los precios mensuales del café robusta desde el año 2000. Esta serie forma parte del objeto `Coffee_Prices` del paquete `TSstudio`. Empezaremos cargando la serie `Coffee_Prices` y restando los precios mensuales del café Robusta desde enero de 2010 utilizando la función `window`:
 
 ```{r}
 data("Coffee_Prices")
@@ -235,17 +241,17 @@ checkresiduals(robusta_md)
 
 - Muchas pruebas estadísticas se utilizan para intentar rechazar alguna hipótesis nula. En este caso concreto, la prueba de `Ljung-Box` trata de rechazar la independencia de algunos valores
 
-  - Si el valor $p < 0,05$: Puedes rechazar la hipótesis nula asumiendo un 5% de probabilidad de error. Por lo tanto, puede asumir que sus valores muestran dependencia entre sí.
+  - Si el valor $p < 0.05$: Puedes rechazar la hipótesis nula asumiendo un 5% de probabilidad de error. Por lo tanto, puede asumir que sus valores muestran dependencia entre sí.
 
-  - Si el valor $p > 0,05$: No tiene suficiente evidencia estadística para rechazar la hipótesis nula. Así que no puede asumir que sus valores son dependientes. Esto podría significar que sus valores son dependientes de todos modos o puede significar que sus valores son independientes. Pero usted no está probando ninguna posibilidad específica, lo que su prueba realmente es que usted no puede afirmar la dependencia de los valores, ni puede afirmar la independencia de los valores.
+  - Si el valor $p > 0.05$: No tiene suficiente evidencia estadística para rechazar la hipótesis nula. Así que no puede asumir que sus valores son dependientes. Esto podría significar que sus valores son dependientes de todos modos o puede significar que sus valores son independientes. Pero usted no está probando ninguna posibilidad específica, lo que su prueba realmente es que usted no puede afirmar la dependencia de los valores, ni puede afirmar la independencia de los valores.
 
   - En general, lo importante aquí es tener en cuenta que un valor $p < 0.05$ permite rechazar la hipótesis nula, pero un valor $p > 0.05$ no permite confirmar la hipótesis nula. Esto es, no se puede probar la independencia de los valores de las series temporales utilizando la prueba de `Ljung-Box`. Sólo puede probar la dependencia.
 
 ## Predicción del consumo mensual de gas natural en EE.UU
 
-- El modelo **ARIMA estacional (SARIMA)**, como su nombre indica, es una versión designada del modelo `ARIMA` para series temporales con un componente estacional. Una serie temporal con un componente estacional tiene una fuerte relación con sus rezagos estacionales, el modelo `SARIMA` utiliza los rezagos estacionales de manera similar a como el modelo ARIMA utiliza los rezagos no estacionales con los procesos `AR` y `MA` y la diferenciación. Para ello, añade los tres componentes siguientes al modelo `ARIMA`
+- El modelo **ARIMA estacional (SARIMA)**, como su nombre indica, es una versión designada del modelo `ARIMA` para series temporales con un componente estacional. Una serie temporal con un componente estacional tiene una fuerte relación con sus rezagos estacionales, el modelo `SARIMA` utiliza los rezagos estacionales de manera similar a como el modelo `ARIMA` utiliza los rezagos no estacionales con los procesos `AR` y `MA` y la diferenciación. Para ello, añade los tres componentes siguientes al modelo `ARIMA`
 
-  - **Proceso SAR(P)**: Un proceso `A`R estacional de la serie con sus `P` rezagos estacionales pasados. Por ejemplo, un `SAR(2)` es un proceso `AR` de la serie con sus dos últimos rezagos estacionales, es decir, $Y_{t}=c+\Phi_{1}Y_{t-f}+\Phi_{2}Y_{t-2f}+\epsilon_{t}$ donde $\Phi$ representa el coeficiente estacional del proceso `SAR`, y $f$ representa la frecuencia de la serie.
+  - **Proceso SAR(P)**: Un proceso `AR` estacional de la serie con sus `P` rezagos estacionales pasados. Por ejemplo, un `SAR(2)` es un proceso `AR` de la serie con sus dos últimos rezagos estacionales, es decir, $Y_{t}=c+\Phi_{1}Y_{t-f}+\Phi_{2}Y_{t-2f}+\epsilon_{t}$ donde $\Phi$ representa el coeficiente estacional del proceso `SAR`, y $f$ representa la frecuencia de la serie.
   
   - **Proceso SMA(Q)**: Un proceso `MA` estacional de la serie con sus `Q` términos de error estacionales pasados. Por ejemplo, un `SMA(1)` es un proceso de media móvil de la serie con su término de error estacional pasado, es decir, $Y_{t}=\mu+\epsilon_{t}+\Theta_{1}\epsilon_{t-f}$, donde $\Theta$ representa el coeficiente estacional del proceso `SMA`, y $f$ representa la frecuencia de la serie.
   - **Proceso SI(D)**: Una diferenciación estacional de la serie con sus últimos `D` rezagos estacionales. De forma similar, podemos diferenciar la serie con su rezago estacional, es decir $Y_{D=1}=Y_{t}-Y_{t-f}$.
@@ -268,7 +274,15 @@ ts_plot(USgas,
         Xtitle = "Year")
 ```
 
-- Como hemos visto anteriormente, la serie de gas de EE.UU. tiene un fuerte patrón estacional, además la serie tiene una tendencia al alza, por lo tanto, se requiere el uso de los modelos `ARIMA`. Empezaremos por definir particiones `training` y `testing` usando la función `ts_split`, dejando los últimos 12 meses de la serie como partición de prueba:
+- Como hemos visto anteriormente, la serie de gas de EE.UU. tiene un fuerte patrón estacional, además la serie tiene una tendencia al alza, por lo tanto, se requiere el uso de los modelos `ARIMA`. Puede usar las funciones: `ts_info(USgas)` y `ts_decompose(USgas)` para identificar tendencia, estacionalidad e información importantes relacionada con la serie de tiempo. Empezaremos por definir particiones `training` y `testing` usando la función `ts_split`, dejando los últimos 12 meses de la serie como partición de prueba:
+
+```{r}
+ts_info(USgas)
+```
+
+```{r}
+ts_decompose(USgas)
+```
 
 ```{r}
 USgas_split <- ts_split(USgas, sample.out = 12)
@@ -278,7 +292,7 @@ test <- USgas_split$test
 
 ```
 
-- - Antes de iniciar el proceso de entrenamiento del modelo `SARIMA`, realizaremos diagnósticos con respecto a la correlación de la serie con las funciones `ACF` y `PACF`. Dado que nos interesa ver la relación de la serie con sus rezagos estacionales, aumentaremos el número de rezagos a calcular y mostrar, estableciendo el argumento `lag.max` a 60 rezagos
+- Antes de iniciar el proceso de entrenamiento del modelo `SARIMA`, realizaremos diagnósticos con respecto a la correlación de la serie con las funciones `ACF` y `PACF`. Dado que nos interesa ver la relación de la serie con sus rezagos estacionales, aumentaremos el número de rezagos a calcular y mostrar, estableciendo el argumento `lag.max` a 60 rezagos
 
 ```{r}
 par(mfrow=c(1,2))
@@ -318,12 +332,14 @@ pacf(USgas_d12_1, lag.max = 60)
 
 - La principal observación de los gráficos `ACF` y `PACF` anteriores es que tanto los rezagos no estacionales como los rezagos estacionales (en ambos gráficos) se están reduciendo. Por lo tanto, podemos concluir que después de de diferenciar las series y transformarlas en un estado estacionario, deberíamos aplicar un proceso proceso `ARMA` para los componentes estacionales y no estacionales del modelo `SARIMA`
 
+![](figures/acf_interpretation.jpg)
+
+
 ## La función `auto.arima`
 
-- Uno de los principales retos de la previsión con la familia de modelos `ARIMA` es el proceso de ajuste de los modelos. Como hemos visto en este capítulo, este proceso incluye muchos pasos manuales que se requieren para verificar la estructura de las series (estacionarias o no estacionaria), las transformaciones de los datos, el análisis descriptivo con los gráficos ACF y PACF para identificar el tipo de proceso y, finalmente, afinar los parámetros del modelo. 
+- Uno de los principales retos de la previsión con la familia de modelos `ARIMA` es el proceso de ajuste de los modelos. Como hemos visto en este capítulo, este proceso incluye muchos pasos manuales que se requieren para verificar la estructura de las series (estacionarias o no estacionaria), las transformaciones de los datos, el análisis descriptivo con los gráficos `ACF` y `PACF` para identificar el tipo de proceso y, finalmente, afinar los parámetros del modelo. 
 
-- Si bien entrenar un modelo ARIMA para una sola serie puede llevar unos minutos, es posible que no se pueda hacer si se tienen docenas de series que pronosticar. La función `auto.arima` del paquete `forecast` ofrece una solución a este problema. Este algoritmo automatiza el proceso de ajuste del modelo `ARIMA` con el uso de métodos para identificar tanto la estructura de la serie (estacionaria o no) como el tipo (estacional o no), y establece los parámetros del modelo en consecuencia. Por ejemplo, podemos utilizar la función para pronosticar `USgas`:
-
+- Si bien entrenar un modelo `ARIMA` para una sola serie puede llevar unos minutos, es posible que no se pueda hacer si se tienen docenas de series que pronosticar. La función `auto.arima` del paquete `forecast` ofrece una solución a este problema. Este algoritmo automatiza el proceso de ajuste del modelo `ARIMA` con el uso de métodos para identificar tanto la estructura de la serie (estacionaria o no) como el tipo (estacional o no), y establece los parámetros del modelo en consecuencia. Por ejemplo, podemos utilizar la función para pronosticar `USgas`:
 
 ```{r}
 library(forecast)
@@ -332,7 +348,7 @@ USgas_auto_md <- auto.arima(train)
 USgas_auto_md
 ```
 
-- Utilizando los argumentos por defecto de la función `auto.arima` se obtiene el modelo `ARIMA` que minimice la puntuación `AIC`. En este caso, se seleccionó un modelo con una puntuación `AIC` de 2480,57:
+- Utilizando los argumentos por defecto de la función `auto.arima` se obtiene el modelo `ARIMA` que minimice la puntuación `AIC`. En este caso, se seleccionó un modelo con una puntuación `AIC` de 2599.67
 
 - Por defecto, la función `auto.arima` aplica una búsqueda de modelos más corta utilizando un enfoque por pasos para reducir el tiempo de búsqueda. La contrapartida de este enfoque es que el modelo puede pasar por alto algunos modelos que pueden obtener mejores resultados. 
 
@@ -387,8 +403,7 @@ final_md <- arima(USgas, order = c(1,1,1),
 checkresiduals(final_md)
 ```
 
-- Observando el gráfico de residuos anterior, se puede ver que los residuos son `white noise` y se distribuyen normalmente. Además, la prueba de `Ljung-Box` confirma que no hay autocorrelación con un valor $p$ de 0.12, por lo tanto no podemos rechazar la hipótesis nula de que los residuos son `white noise`. Estamos listos para empezar. Utilicemos la función de predicción para
-pronosticar los próximos 12 meses de la serie `USgas`:
+- Observando el gráfico de residuos anterior, se puede ver que los residuos son `white noise` y se distribuyen normalmente. Además, la prueba de `Ljung-Box` confirma que no hay autocorrelación con un valor $p$ de 0.04964, por lo tanto no podemos rechazar la hipótesis nula de que los residuos son `white noise`. Estamos listos para empezar. Utilicemos la función de predicción para pronosticar los próximos 12 meses de la serie `USgas`:
 
 ```{r}
 USgas_fc <- forecast(final_md, h = 12)

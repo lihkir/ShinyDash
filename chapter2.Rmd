@@ -22,7 +22,7 @@ devtools::install_git('https://github.com/r-dbi/DBI.git')
 devtools::install_git('https://github.com/cran/RPostgreSQL.git)
 ```
 
-- Para conectar, necesitamos introducir los siguientes comandos en `R`, nos conectaremos a la base de datos creada anteriormente en `Heroku Postgres` en la sección  de `Python`. RPostgres es una interfaz compatible con `DBI` para la base de datos `Postgres`. Es una reescritura desde cero usando `C++` y `Rcpp`. Este paquete actúa tanto como el controlador de la base de datos como la interfaz `DBI`. El código y la información adicional están disponibles en su repositorio GitHub aquí: [RPostgres](https://github.com/r-dbi/RPostgres)
+- Para conectar, necesitamos introducir los siguientes comandos en `R`, nos conectaremos a la base de datos creada anteriormente en `Heroku Postgres` en la sección  de `Python`. `RPostgres` es una interfaz compatible con `DBI` para la base de datos `Postgres`. Es una reescritura desde cero usando `C++` y `Rcpp`. Este paquete actúa tanto como el controlador de la base de datos como la interfaz `DBI`. El código y la información adicional están disponibles en su repositorio `GitHub` aquí: [RPostgres](https://github.com/r-dbi/RPostgres). Debe modificar la información que recibe la funcion `dbConnect()` por aquella que obtuvo al crear su base de datos en `Heroku Postgres`
 
 ```{r}
 library(DBI)
@@ -52,7 +52,7 @@ TGLS_df <- read.csv(file = 'TGLS.csv')
 head(TGLS_df)
 ```
 
-- Los nombres de las columnas de este dataframe son problemáticos para las bases de datos (y especialmente para `PostgreSQL`) por varias razones: los `"."` en los nombres pueden ser un problema, y `PostgreSQL` espera que los nombres de las columnas estén todos en minúsculas. Aquí hay una función para hacer que los nombres de las columnas sean seguros para las bases de datos. Luego obtenemos algunos estadísticos usando la función `summary()`
+- Los nombres de las columnas de este dataframe son problemáticos para las bases de datos (y especialmente para `PostgreSQL`) por varias razones: los `"."` en los nombres pueden ser un problema, `PostgreSQL` espera que los nombres de las columnas estén todos en minúsculas. Aquí hay una función para hacer que los nombres de las columnas sean seguros para las bases de datos. Luego obtenemos algunos estadísticos usando la función `summary()`
 
 ```{r}
 dbSafeNames = function(names) {
